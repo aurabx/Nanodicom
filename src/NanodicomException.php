@@ -1,6 +1,9 @@
 <?php
+
+namespace Nanodicom;
+
 /**
- * nanodicom/exception.php file
+ * nanodicom/NanodicomException.php file
  *
  * @package    Nanodicom
  * @category   Base
@@ -22,12 +25,12 @@
  * @copyright  (c) 2010-2011
  * @license    http://www.opensource.org/licenses/mit-license.php MIT-license
  */
-class Nanodicom_Exception extends Exception {
+class NanodicomException extends \Exception {
 
 	/**
 	 * Creates a new translated exception.
 	 *
-	 *     throw new Nanodicom_Exception('Something went terrible wrong, :user',
+	 *     throw new \Nanodicom\NanodicomException('Something went terrible wrong, :user',
 	 *         array(':user' => $user));
 	 *
 	 * @param   string     error message
@@ -59,4 +62,4 @@ class Nanodicom_Exception extends Exception {
 			get_class($this), $this->getCode(), strip_tags($this->getMessage()));
 	}
 
-} // End Nanodicom_Exception
+} // End \Nanodicom\NanodicomException

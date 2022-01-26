@@ -390,7 +390,7 @@ Examples
         $dicom = Nanodicom::factory('simple', $filename);
         echo $dicom->parse()->profiler_diff('parse')."\n";
     }
-    catch (Nanodicom_Exception $e)
+    catch (\Nanodicom\NanodicomException $e)
     {
         echo 'File failed. '.$e->getMessage()."\n";
     }

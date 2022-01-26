@@ -1,6 +1,6 @@
 <?php
 /**
- * tools/pixeler.php file
+ * tools/Pixeler.php file
  *
  * @package    Nanodicom
  * @category   Tools
@@ -10,8 +10,14 @@
  * @license    http://www.opensource.org/licenses/mit-license.php MIT-license
  */
 
+namespace Nanodicom\Tools;
+
+
+use Nanodicom\NanodicomException;
+use Nanodicom\Nanodicom;
+
 /**
- * Dicom_Pixeler class.
+ * \Nanodicom\Pixeler class.
  *
  * Extends Nanodicom. Pixel data reader. 
  * Currently support:
@@ -27,7 +33,7 @@
  * @copyright  (c) 2010-2011
  * @license    http://www.opensource.org/licenses/mit-license.php MIT-license
  */
-class Dicom_Pixeler extends Nanodicom {
+class Pixeler extends Nanodicom {
 
 	/**
 	 * @var string driver to be used: GD (gd), ImageMagick (imagick), GraphicsMagick (gmagick)
@@ -223,7 +229,7 @@ class Dicom_Pixeler extends Nanodicom {
 		if ( ! array_key_exists(trim($this->_transfer_syntax), self::$reading_image_transfer_syntaxes)) 
 		{
 			// Not supported transfer syntax found
-			throw new Nanodicom_Exception('Transfer syntax ":syntax" not supported', 
+			throw new NanodicomException('Transfer syntax ":syntax" not supported',
 				array(':syntax' => $this->_transfer_syntax), 300);
 		}
 
@@ -234,7 +240,7 @@ class Dicom_Pixeler extends Nanodicom {
 		if ($rows == NULL OR $cols === NULL)
 		{
 			// There is no rows, no samples per pixel, no pixel data or malformed dicom file
-			throw new Nanodicom_Exception('There is no rows, no samples per pixel, no pixel data or malformed dicom file', NULL, 301);
+			throw new NanodicomException('There is no rows, no samples per pixel, no pixel data or malformed dicom file', NULL, 301);
 		}
 		
 		$samples_per_pixel = $this->get(0x0028, 0x0002, 1);
@@ -610,7 +616,7 @@ class Dicom_Pixeler extends Nanodicom {
 				if ($maximum == $minimum) 
 				{ 
 					// Something wrong. Avoid having a zero division
-					throw new Nanodicom_Exception('Division by zero', NULL, 302);
+					throw new NanodicomException('Division by zero', NULL, 302);
 				}
 			}
 
@@ -857,7 +863,7 @@ class Dicom_Pixeler extends Nanodicom {
 	 *
 	 * @param string the blob that holds the pixel data
 	 * @param integer the current position in the string to read
-	 * @param integet the number of bytes to read
+	 * @param integer the number of bytes to read
 	 * @return integer the gray or color value at the given location
 	 */
 	protected function _read_gray($blob, $current_position, $bytes_to_read)

@@ -1,6 +1,6 @@
 <?php
 /**
- * nanodicom/dictionary.php file
+ * nanodicom/Dictionary.php file
  *
  * @package    Nanodicom
  * @category   Base
@@ -9,9 +9,11 @@
  * @copyright  (c) 2010-2011
  * @license    http://www.opensource.org/licenses/mit-license.php MIT-license
  */
+namespace Nanodicom;
+
 
  /**
- * Nanodicom_Dictionary class.
+ * \Nanodicom\Dictionary class.
  * @package    Nanodicom
  * @category   Base
  * @author     Nano Documet <nanodocumet@gmail.com>
@@ -19,7 +21,7 @@
  * @copyright  (c) 2010-2011
  * @license    http://www.opensource.org/licenses/mit-license.php MIT-license
  */
-class Nanodicom_Dictionary
+class Dictionary
 {
 	public static $dict;
 	public static $dict_by_name;
@@ -93,12 +95,12 @@ class Nanodicom_Dictionary
 			require_once(NANODICOMROOT.DIRECTORY_SEPARATOR.'nanodicom'.DIRECTORY_SEPARATOR.'dict'.DIRECTORY_SEPARATOR.sprintf('0x%04X',$group).'.php');
 			
 			// Some dictionaries could be empty
-			if (isset(Nanodicom_Dictionary::$dict[$group]) AND count(Nanodicom_Dictionary::$dict[$group]) > 0)
+			if (isset(Dictionary::$dict[$group]) AND count(Dictionary::$dict[$group]) > 0)
 			{
 				// Load the corresponding lookup table for names
-				foreach (Nanodicom_Dictionary::$dict[$group] as $dict_element => $dict_data)
+				foreach (Dictionary::$dict[$group] as $dict_element => $dict_data)
 				{
-					Nanodicom_Dictionary::$dict_by_name[strtolower($dict_data[2])] = array($group, $dict_element);
+					Dictionary::$dict_by_name[strtolower($dict_data[2])] = array($group, $dict_element);
 					unset($dict_element, $dict_data);
 				}
 			}
@@ -109,7 +111,7 @@ class Nanodicom_Dictionary
 	}
 
 	/**
-	 * Create a new Nanodicom_Dictionary instance. There should be only 1 instance running at all times
+	 * Create a new \Nanodicom\Dictionary instance. There should be only 1 instance running at all times
 	 *
 	 * @return  void
 	 */
@@ -120,28 +122,26 @@ class Nanodicom_Dictionary
 		self::$_loaded = TRUE;
 		
 		// Group 0x0002		
-		Nanodicom_Dictionary::$dict[0x0002][0x0000] = array('UL', '1', 'MetaElementGroupLength');
-		Nanodicom_Dictionary::$dict[0x0002][0x0001] = array('OB', '1', 'FileMetaInformationVersion');
-		Nanodicom_Dictionary::$dict[0x0002][0x0002] = array('UI', '1', 'MediaStorageSOPClassUID');
-		Nanodicom_Dictionary::$dict[0x0002][0x0003] = array('UI', '1', 'MediaStorageSOPInstanceUID');
-		Nanodicom_Dictionary::$dict[0x0002][0x0010] = array('UI', '1', 'TransferSyntaxUID');
-		Nanodicom_Dictionary::$dict[0x0002][0x0012] = array('UI', '1', 'ImplementationClassUID');
-		Nanodicom_Dictionary::$dict[0x0002][0x0013] = array('SH', '1', 'ImplementationVersionName');
-		Nanodicom_Dictionary::$dict[0x0002][0x0016] = array('AE', '1', 'SourceApplicationEntityTitle');
-		Nanodicom_Dictionary::$dict[0x0002][0x0100] = array('UI', '1', 'PrivateInformationCreatorUID');
-		Nanodicom_Dictionary::$dict[0x0002][0x0102] = array('OB', '1', 'PrivateInformation');
+		Dictionary::$dict[0x0002][0x0000] = array('UL', '1', 'MetaElementGroupLength');
+		Dictionary::$dict[0x0002][0x0001] = array('OB', '1', 'FileMetaInformationVersion');
+		Dictionary::$dict[0x0002][0x0002] = array('UI', '1', 'MediaStorageSOPClassUID');
+		Dictionary::$dict[0x0002][0x0003] = array('UI', '1', 'MediaStorageSOPInstanceUID');
+		Dictionary::$dict[0x0002][0x0010] = array('UI', '1', 'TransferSyntaxUID');
+		Dictionary::$dict[0x0002][0x0012] = array('UI', '1', 'ImplementationClassUID');
+		Dictionary::$dict[0x0002][0x0013] = array('SH', '1', 'ImplementationVersionName');
+		Dictionary::$dict[0x0002][0x0016] = array('AE', '1', 'SourceApplicationEntityTitle');
+		Dictionary::$dict[0x0002][0x0100] = array('UI', '1', 'PrivateInformationCreatorUID');
+		Dictionary::$dict[0x0002][0x0102] = array('OB', '1', 'PrivateInformation');
 		// Group 0xFFFE
 		// IT = Item
 		// DI = Delimitation Item
-		Nanodicom_Dictionary::$dict[0xFFFE][0xE000] = array('IT', '1', 'Item');
-		Nanodicom_Dictionary::$dict[0xFFFE][0xE00D] = array('DI', '1', 'ItemDelimitationItem');
-		Nanodicom_Dictionary::$dict[0xFFFE][0xE0DD] = array('DI', '1', 'SequenceDelimitationItem');
+		Dictionary::$dict[0xFFFE][0xE000] = array('IT', '1', 'Item');
+		Dictionary::$dict[0xFFFE][0xE00D] = array('DI', '1', 'ItemDelimitationItem');
+		Dictionary::$dict[0xFFFE][0xE0DD] = array('DI', '1', 'SequenceDelimitationItem');
 
 		// Minimum set of groups loaded
-		Nanodicom_Dictionary::$_loaded_dictionaries[0x0002] = TRUE;
-		Nanodicom_Dictionary::$_loaded_dictionaries[0xFFFE] = TRUE;
+		Dictionary::$_loaded_dictionaries[0x0002] = TRUE;
+		Dictionary::$_loaded_dictionaries[0xFFFE] = TRUE;
 	}
-
 }
 
-new Nanodicom_Dictionary;

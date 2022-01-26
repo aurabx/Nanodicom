@@ -1,6 +1,9 @@
 <?php
+
+namespace Nanodicom;
+
 /**
- * nanodicom/core.php file
+ * nanodicom/Core.php file
  *
  * @package    Nanodicom
  * @category   Base
@@ -11,7 +14,7 @@
  */
 
 /**
- * Nanodicom_Core class.
+ * Nano\Nanodicom\Core class.
  *
  * @package    Nanodicom
  * @category   Base
@@ -20,7 +23,7 @@
  * @copyright  (c) 2010-2011
  * @license    http://www.opensource.org/licenses/mit-license.php MIT-license
  */
-abstract class Nanodicom_Core {
+abstract class Core {
 
 	// Release version and codename
 	const VERSION  = '1.3.1';
@@ -132,7 +135,7 @@ abstract class Nanodicom_Core {
 	 * @param   mixed      blob or location of the file
 	 * @param   string     name of the tool to load
 	 * @param   string     type of data passed
-	 * @return  Dicom_tool A Tool
+	 * @return  $this
 	 */
 	public static function factory($location, $name = 'simple', $type = 'file')
 	{
@@ -271,7 +274,7 @@ abstract class Nanodicom_Core {
 	 * Create a new Nanodicom instance. It is usually called from a class extended
 	 * from core, ie Dumper
 	 *
-	 *     $dicom_object = DICOM_Dumper::factory($location);
+	 *     $\Nanodicom\object = \Nanodicom\Dumper::factory($location);
 	 *
 	 * @param   mixed      file blob or location of the file
 	 * @param   string     the name of the tool created
@@ -281,10 +284,10 @@ abstract class Nanodicom_Core {
 	public function __construct($location, $name, $type)
 	{
 		// Load necessary files
-		require_once NANODICOMCOREPATH.'exception.php';
+		require_once NANODICOMCOREPATH.'NanodicomException.php';
 
 		// Load the dictionary
-		require_once NANODICOMCOREPATH.'dictionary.php';
+		require_once NANODICOMCOREPATH.'Dictionary.php';
 
 		self::$_read_int = (PHP_INT_SIZE > 4) ? '_read_int_64' : '_read_int_32';
 		self::$_write_int = (PHP_INT_SIZE > 4) ? '_write_int_64' : '_write_int_32';
@@ -341,15 +344,15 @@ abstract class Nanodicom_Core {
 	 *
 	 * @param   string  tag element name
 	 * @param   mixed   new value
-	 * @return  this
+	 * @return  $this
 	 */
 	public function __set($name, $value)
 	{
 		// Get the proper name
 		$name = $this->_proper_name($name);
-		if (isset(Nanodicom_Dictionary::$dict_by_name[$name]))
+		if (isset(\Nanodicom\Dictionary::$dict_by_name[$name]))
 		{
-			list($group, $element) = Nanodicom_Dictionary::$dict_by_name[$name];
+			list($group, $element) = \Nanodicom\Dictionary::$dict_by_name[$name];
 			$this->value($group, $element, $value);
 		}
 		
@@ -362,15 +365,15 @@ abstract class Nanodicom_Core {
 	 *     unset($dicom_object->patient_name);
 	 *
 	 * @param   string  tag element name
-	 * @return  this
+	 * @return  $this
 	 */
 	public function __unset($name)
 	{
 		// Get the proper name
 		$name = $this->_proper_name($name);
-		if (isset(Nanodicom_Dictionary::$dict_by_name[$name]))
+		if (isset(\Nanodicom\Dictionary::$dict_by_name[$name]))
 		{
-			list($group, $element) = Nanodicom_Dictionary::$dict_by_name[$name];
+			list($group, $element) = \Nanodicom\Dictionary::$dict_by_name[$name];
 			if (isset($this->_dataset[$group][$element]))
 			{
 				unset($this->_dataset[$group][$element]);
@@ -414,7 +417,7 @@ abstract class Nanodicom_Core {
 	 * Unknown results when the object is extended and then manipulated and then extended.
 	 *
 	 * @param   string  name of the tool to extend
-	 * @return  this
+	 * @return  $this
 	 */
 	public function extend($name)
 	{
@@ -537,7 +540,7 @@ abstract class Nanodicom_Core {
 	/**
 	 * Public method to flush the object
 	 *
-	 * @return  this
+	 * @return  $this
 	 */
 	public function flush()
 	{
@@ -627,15 +630,15 @@ abstract class Nanodicom_Core {
 		$this->parse();
 		
 		$transfer_syntax = trim($this->get(0x0002, 0x0010, 'UN'));
-		$transfer_syntax .= ($transfer_syntax == 'UN' OR ! array_key_exists($transfer_syntax, Nanodicom_Dictionary::$transfer_syntaxes))
+		$transfer_syntax .= ($transfer_syntax == 'UN' OR ! array_key_exists($transfer_syntax, \Nanodicom\Dictionary::$transfer_syntaxes))
 			? ' - Unknow'
-			: ' - Parsed using: '.Nanodicom_Dictionary::$transfer_syntaxes[$transfer_syntax][0];
-			//.'. Parsed using: '.Nanodicom_Dictionary::$transfer_syntaxes[$this->_transfer_syntax][0];
+			: ' - Parsed using: '.\Nanodicom\Dictionary::$transfer_syntaxes[$transfer_syntax][0];
+			//.'. Parsed using: '.\Nanodicom\Dictionary::$transfer_syntaxes[$this->_transfer_syntax][0];
 		
 		if ($transfer_syntax == 'UN - Unknow')
 		{
 			$transfer_syntax .= ' [Parsed Using: '.$this->_transfer_syntax.' - '
-				.Nanodicom_Dictionary::$transfer_syntaxes[$this->_transfer_syntax][0].']';
+				.\Nanodicom\Dictionary::$transfer_syntaxes[$this->_transfer_syntax][0].']';
 		}
 		
 		// Checking for "rows" since that value should be set for images.
@@ -789,9 +792,9 @@ abstract class Nanodicom_Core {
 			$new_value = $element;
 
 			// Check if there is an entry in the dictionary
-			if (isset(Nanodicom_Dictionary::$dict_by_name[$name]))
+			if (isset(\Nanodicom\Dictionary::$dict_by_name[$name]))
 			{
-				list($group, $element) = Nanodicom_Dictionary::$dict_by_name[$name];
+				list($group, $element) = \Nanodicom\Dictionary::$dict_by_name[$name];
 			}
 			else
 			{
@@ -839,7 +842,7 @@ abstract class Nanodicom_Core {
 		}
 
 		// Load the dictionary for this group
-		Nanodicom_Dictionary::load_dictionary($group, TRUE);
+		\Nanodicom\Dictionary::load_dictionary($group, TRUE);
 
 		// Grab the vr
 		list($value_representation, $multiplicity, $name) = $this->_decode_vr($group, $element, $original_vr, 0);
@@ -908,7 +911,7 @@ abstract class Nanodicom_Core {
 	 * @param   mixed    array for a list of elements tags to read. parsing stops when all found. Or TRUE to force
 	 *                   load dictionaries when parsing. Default is FALSE to avoid reading dictionaries.
 	 * @param   boolean  a flag to test if dicom file has DCM header only.
-	 * @return	this
+	 * @return	$this
 	 */
 	public function parse($vr_reading_list = FALSE, $check_dicom_preamble = FALSE)
 	{
@@ -937,7 +940,7 @@ abstract class Nanodicom_Core {
 	 *
 	 * TODO: Throw exceptions in errors
 	 * @param   string    location of the file where the contents will be written
-	 * @return	this
+	 * @return	$this
 	 */
 	public function write_file($filename)
 	{
@@ -950,7 +953,7 @@ abstract class Nanodicom_Core {
 	 * __get calls won't be able to return the right values.
 	 * Defaults to FALSE.
 	 *
-	 * @return	this
+	 * @return	$this
 	 */
 	public function load_dictionaries($value = FALSE)
 	{
@@ -1044,7 +1047,7 @@ abstract class Nanodicom_Core {
 	 * Public method to set the vrs to read
 	 *
 	 * @param   array    a list of elements tags to read. Either names or array of (group,element)
-	 * @return	this
+	 * @return	$this
 	 */
 	public function set_vr_reading_list($vr_reading_list)
 	{
@@ -1136,8 +1139,8 @@ abstract class Nanodicom_Core {
 			return FALSE;
 			
 		if (in_array(sprintf('0x%04X',$group).'.'.sprintf('0x%04X',$element), $this->_vr_reading_list)
-			OR (isset(Nanodicom_Dictionary::$dict[$group][$element]) 
-				AND in_array(Nanodicom_Dictionary::$dict[$group][$element][2], $this->_vr_reading_list)))
+			OR (isset(\Nanodicom\Dictionary::$dict[$group][$element]) 
+				AND in_array(\Nanodicom\Dictionary::$dict[$group][$element][2], $this->_vr_reading_list)))
 		{
 			// Element is in list
 			$this->_counted_elements++;
@@ -1209,15 +1212,15 @@ abstract class Nanodicom_Core {
 	 *
 	 * @param	integer	 the group
 	 * @param	integer	 the element
-	 * @return	boolean	 true if all elements have been found (finish parsing), false otherwise
+	 * @return	array
 	 */
 	protected function _decode_vr($group, $element, $vr, $length)
 	{
-		if ( isset(Nanodicom_Dictionary::$dict[$group][$element]))
+		if ( isset(\Nanodicom\Dictionary::$dict[$group][$element]))
 		{
 			// Group and Element are listed.
 			// 1) From dictionary
-			list($value_representation, $multiplicity, $name) = Nanodicom_Dictionary::$dict[$group][$element];
+			list($value_representation, $multiplicity, $name) = \Nanodicom\Dictionary::$dict[$group][$element];
 		}
 		else
 		{
@@ -1240,7 +1243,7 @@ abstract class Nanodicom_Core {
 	 * Parsing code
 	 *
 	 * @param	boolean	 true to check file is dicom, default to false
-	 * @return	this	 for chaining
+	 * @return	$this	 for chaining
 	 */
 	protected function _parse($check_preamble_only = FALSE)
 	{
@@ -1257,7 +1260,7 @@ abstract class Nanodicom_Core {
 			{
 				$this->_read_file(0, 132);
 			}
-			catch (Nanodicom_Exception $e)
+			catch (NanodicomException $e)
 			{
 				$this->errors[] = $e->getMessage();
 				return $this;
@@ -1270,7 +1273,7 @@ abstract class Nanodicom_Core {
 			{
 				$this->_read_file();
 			}
-			catch (Nanodicom_Exception $e)
+			catch (NanodicomException $e)
 			{
 				$this->errors[] = $e->getMessage();
 				return $this;
@@ -1283,7 +1286,7 @@ abstract class Nanodicom_Core {
 			// Test for NEMA or DICOM file.  
 			$this->_preamble  = $this->_read(128);
 		}
-		catch (Nanodicom_Exception $e)
+		catch (NanodicomException $e)
 		{
 			$this->errors[] = $e->getMessage();
 			return $this;
@@ -1294,7 +1297,7 @@ abstract class Nanodicom_Core {
 			// Test to see if has preamble
 			$this->has_dicom_preamble  = (bool) ($this->_read(4) == 'DICM');
 		}
-		catch (Nanodicom_Exception $e)
+		catch (NanodicomException $e)
 		{
 			$this->errors[] = $e->getMessage();
 			return $this;
@@ -1320,7 +1323,7 @@ abstract class Nanodicom_Core {
 			{
 				$new_element  = $this->_read_element();
 			}
-			catch (Nanodicom_Exception $e)
+			catch (NanodicomException $e)
 			{
 				$this->errors[] = $e->getMessage();
 				break;
@@ -1362,7 +1365,7 @@ abstract class Nanodicom_Core {
 			}
 
 			// Load dictionary (if necessary)
-			Nanodicom_Dictionary::load_dictionary($new_element[0], $this->_force_load_dictionary);
+			\Nanodicom\Dictionary::load_dictionary($new_element[0], $this->_force_load_dictionary);
 
 			if ($this->{$this->_check_list_function}($new_element[0], $new_element[1]))
 			{
@@ -1403,8 +1406,8 @@ abstract class Nanodicom_Core {
 	 *
 	 * This parser handles (incorrectly set) odd lengths as well.
 	 *
-	 * @return	void
-	 * @throws  Nanodicom_Exception
+	 * @return    array
+     * @throws  NanodicomException
 	 */
 	protected function _read_element()
 	{
@@ -1483,7 +1486,7 @@ abstract class Nanodicom_Core {
 
 		// Checking for Unexpected Undefined lengths
 		if ( ! $allow_undefined_length AND $length == self::UNDEFINED_LENGTH) {
-			throw new Nanodicom_Exception('Unexpected Undefined Length found at [:group][:element]',
+			throw new NanodicomException('Unexpected Undefined Length found at [:group][:element]',
 										  array(':group' => $group, ':element' => $element), 100);
 		}
 		
@@ -1551,7 +1554,7 @@ abstract class Nanodicom_Core {
 	protected function _read_value_from_blob( & $elem, $group, $element)
 	{
 		// Load dictionaries (Forced loading)
-		Nanodicom_Dictionary::load_dictionary($group, TRUE);
+		\Nanodicom\Dictionary::load_dictionary($group, TRUE);
 
 		// Save current pointer
 		$current_pointer = $this->_tell();
@@ -2205,7 +2208,7 @@ abstract class Nanodicom_Core {
 			if ($this->_oversize_retries > 0)
 			{
 				$missing_bytes = $offset - $this->_file_length;
-				throw new Nanodicom_Exception('End of file :file has been reached. File size is :filesize, failed to allocate :missing bytes at byte :byte'
+				throw new NanodicomException('End of file :file has been reached. File size is :filesize, failed to allocate :missing bytes at byte :byte'
 										  , array(':file' => $this->_location, ':filesize' => $this->_file_length, 
 												  ':missing' => $missing_bytes, ':byte' => sprintf('0x%04X',$this->_current_pointer)), 3);
 			}
@@ -2239,7 +2242,7 @@ abstract class Nanodicom_Core {
 	 * @param	integer	 starting byte for reading
 	 * @param	mixed	 how many bytes to read
 	 * @return	void
-	 * @throws  Nanodicom_Exception
+	 * @throws  NanodicomException
 	 */
 	protected function _read_file($starting_byte = 0, $length = NULL)
 	{
@@ -2265,14 +2268,14 @@ abstract class Nanodicom_Core {
 			
 			// Checking if file exists
 			if ( ! (file_exists($this->_location) AND is_file($this->_location))) 
-				throw new Nanodicom_Exception('File :file does not exist', array(':file' => $this->_location), 0);
+				throw new NanodicomException('File :file does not exist', array(':file' => $this->_location), 0);
 
 			// Opening handler for reading
 			$file_handle = fopen($this->_location, 'rb');
 
 			// Checking if file can be opened
 			if ( ! $file_handle)
-				throw new Nanodicom_Exception('File :file cannot be opened', array(':file' => $this->_location), 1);
+				throw new NanodicomException('File :file cannot be opened', array(':file' => $this->_location), 1);
 			
 			// Safely read long file values
 			$this->_file_length = sprintf('%u', filesize($this->_location));
@@ -2285,7 +2288,7 @@ abstract class Nanodicom_Core {
 			$length = ($length === NULL) ? $this->_file_length : $length;
 			
 			if ($length <= 0)
-				throw new Nanodicom_Exception('Length :length found at file :file at byte :byte',
+				throw new NanodicomException('Length :length found at file :file at byte :byte',
 					array(':length' => $length, ':file' => $this->_location, ':byte' => sprintf('0x%04X',$starting_byte)), 2);
 
 			// Read the specified number of bytes
@@ -2295,7 +2298,7 @@ abstract class Nanodicom_Core {
 			}
 			catch (Exception $e)
 			{
-				throw new Nanodicom_Exception('Error occured. Reading :length from file :file at byte :byte got an error',
+				throw new NanodicomException('Error occured. Reading :length from file :file at byte :byte got an error',
 					array(':length' => $length, ':file' => $this->_location, ':byte' => sprintf('0x%04X',$starting_byte)), 3);
 			}
 
@@ -2312,7 +2315,7 @@ abstract class Nanodicom_Core {
 	 *
 	 * @param	integer	 number of bytes to read or NULL
 	 * @return 	boolean|string boolean when checking if there is still data or a binary string otherwise
-	 * @throws  Nanodicom_Exception
+	 * @throws  NanodicomException
 	 */
 	protected function _read($length = NULL)
 	{
@@ -2333,13 +2336,13 @@ abstract class Nanodicom_Core {
 		if ($this->_current_pointer > $this->_file_length)
 		{
 			$missing_bytes	  = $this->_current_pointer - $this->_file_length;
-			throw new Nanodicom_Exception('End of file :file has been reached. File size is :filesize, failed to allocate :missing bytes at byte :byte'
+			throw new NanodicomException('End of file :file has been reached. File size is :filesize, failed to allocate :missing bytes at byte :byte'
 									  , array(':file' => $this->_location, ':filesize' => $this->_file_length, 
 											  ':missing' => $missing_bytes, ':byte' => sprintf('0x%04X',$starting_byte)), 3);
 		}
 		
 		if ($this->_current_pointer < 0)
-			throw new Nanodicom_Exception('Trying to read negative bytes on file :file', array(':file' => $this->_location), 4);
+			throw new NanodicomException('Trying to read negative bytes on file :file', array(':file' => $this->_location), 4);
 		
 		// Return the bytes requested
 		return substr($this->_blob, $starting_byte, $length);

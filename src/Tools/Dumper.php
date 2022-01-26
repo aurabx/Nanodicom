@@ -1,6 +1,6 @@
 <?php
 /**
- * tools/dumper.php file
+ * tools/Dumper.php file
  *
  * @package    Nanodicom
  * @category   Tools
@@ -10,8 +10,14 @@
  * @license    http://www.opensource.org/licenses/mit-license.php MIT-license
  */
 
+namespace Nanodicom\Tools;
+
+
+use Nanodicom\Nanodicom;
+use Nanodicom\Dictionary;
+
 /**
- * Dicom_Dumper class.
+ * \Nanodicom\Dumper class.
  *
  * Extends Nanodicom. Dumps the dataset. Currently supports normal echo output and formatted
  * html output. Fully extensible, ie. an xml output can be created as well.
@@ -22,7 +28,7 @@
  * @copyright  (c) 2010-2011
  * @license    http://www.opensource.org/licenses/mit-license.php MIT-license
  */
-class Dicom_Dumper extends Nanodicom {
+class Dumper extends Nanodicom {
 
 	// Default html output
 	protected $_output_html = array(
@@ -118,7 +124,7 @@ class Dicom_Dumper extends Nanodicom {
 		foreach ($dataset as $group => $elements)
 		{
 			// Load dictionaries (Forced loading)
-			Nanodicom_Dictionary::load_dictionary($group, TRUE);
+			Dictionary::load_dictionary($group, TRUE);
 			foreach ($elements as $element => $indexes)
 			{
 				foreach ($indexes as $values)
@@ -186,8 +192,8 @@ class Dicom_Dumper extends Nanodicom {
 		{
 			switch ($column)
 			{
-				case 'name' : $string = isset(Nanodicom_Dictionary::$dict[$element['g']][$element['e']]) 
-									  ? Nanodicom_Dictionary::$dict[$element['g']][$element['e']][2] 
+				case 'name' : $string = isset(Dictionary::$dict[$element['g']][$element['e']])
+									  ? Dictionary::$dict[$element['g']][$element['e']][2]
 									  : 'NA';
 				break;
 				case 'val'  : 
@@ -206,7 +212,7 @@ class Dicom_Dumper extends Nanodicom {
 						? 'BINARY. Element starts at '.$element['off']
 						: ((is_array($element['val']))
 							? implode(',', $element['val'])
-							: (isset(Nanodicom_Dictionary::$dict[$element['g']][$element['e']])
+							: (isset(Dictionary::$dict[$element['g']][$element['e']])
 								? trim($element['val'])
 								: 'UNKNOWN'));
 				break;
@@ -222,4 +228,4 @@ class Dicom_Dumper extends Nanodicom {
 		return $out;
 	}
 	
-} // End Dicom_Dumper
+} // End \Nanodicom\Dumper

@@ -1,6 +1,6 @@
 <?php
 /**
- * tools/anonymizer/clinicaltrial.php file
+ * tools/Anonymizer/ClinicalTrial.php file
  *
  * @package    Nanodicom
  * @category   Tools
@@ -9,11 +9,15 @@
  * @copyright  (c) 2010-2011
  * @license    http://www.opensource.org/licenses/mit-license.php MIT-license
  */
+namespace Nanodicom\Tools\Anonymizer;
+
+
+use Nanodicom\Tools\Anonymizer;
 
 /**
- * Dicom_Anonymizer_Clinicaltrial class.
+ * \Nanodicom\Anonymizer_Clinicaltrial class.
  *
- * Extends Dicom_Anonymizer. Use this to extend specific tools. The idea is to have it
+ * Extends \Nanodicom\Anonymizer. Use this to extend specific tools. The idea is to have it
  * specific to certain functionality. In this case, this tool it is an Anonymizer
  * specific for Clinical Trials.
  * @package    Nanodicom
@@ -24,7 +28,7 @@
  * @license    http://www.opensource.org/licenses/mit-license.php MIT-license
  */
 
-class Dicom_Anonymizer_Clinicaltrial extends Dicom_Anonymizer {
+class ClinicalTrial extends Anonymizer {
 
 	/**
 	 * Anonymizes the dataset
@@ -33,9 +37,9 @@ class Dicom_Anonymizer_Clinicaltrial extends Dicom_Anonymizer {
 	 * @param	integer	 the mode
 	 * @return	string	 the anonymized dataset
 	 */
-	public function anonymize($tags = NULL, $mode = self::RETURN_BLOB)
+	public function anonymize($tags = NULL, $map = NULL, $mode = self::RETURN_BLOB)
 	{
 		//Overload the function here if you want
 	}
 	
-} // End Dicom_Anonymizer_Clinicaltrial
+}

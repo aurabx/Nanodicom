@@ -1,4 +1,8 @@
 <?php
+use Nanodicom\Nanodicom;
+use Nanodicom\NanodicomException;
+
+
 ini_set('display_errors', 'On');
 error_reporting(E_ALL | E_STRICT);
 
@@ -30,7 +34,7 @@ foreach ($files as $file)
 		echo $dicom->parse()->profiler_diff('parse')."\n"; 
 		unset($dicom);
 	}
-	catch (Nanodicom_Exception $e)
+	catch (NanodicomException $e)
 	{
 		echo 'File failed. '.$e->getMessage()."\n";
 	}
@@ -48,7 +52,7 @@ foreach ($files as $file)
 		echo 'Patient name should be empty here: '.$dicom->PatientName."\n";
 		unset($dicom);
 	}
-	catch (Nanodicom_Exception $e)
+	catch (NanodicomException $e)
 	{
 		echo 'File failed. '.$e->getMessage()."\n";
 	}
@@ -65,7 +69,7 @@ foreach ($files as $file)
 		echo 'Patient name if exists: '.$dicom->PatientName."\n"; // Patient Name if exists
 		unset($dicom);
 	}
-	catch (Nanodicom_Exception $e)
+	catch (NanodicomException $e)
 	{
 		echo 'File failed. '.$e->getMessage()."\n";
 	}
@@ -84,7 +88,7 @@ foreach ($files as $file)
 		echo 'This should be empty, no dictionaries loaded.'.$dicom->PatientName."\n";
 		unset($dicom);
 	}
-	catch (Nanodicom_Exception $e)
+	catch (NanodicomException $e)
 	{
 		echo 'File failed. '.$e->getMessage()."\n";
 	}
@@ -99,7 +103,7 @@ foreach ($files as $file)
 		echo 'Patient Name: '.$dicom->value(0x0010, 0x0010)."\n"; // Patient Name if exists
 		unset($dicom);
 	}
-	catch (Nanodicom_Exception $e)
+	catch (NanodicomException $e)
 	{
 		echo 'File failed. '.$e->getMessage()."\n";
 	}
@@ -113,7 +117,7 @@ foreach ($files as $file)
 		echo $dicom->profiler_diff('parse').' '.$dicom->profiler_diff('dump')."\n";
 		unset($dicom);
 	}
-	catch (Nanodicom_Exception $e)
+	catch (NanodicomException $e)
 	{
 		echo 'File failed. '.$e->getMessage()."\n";
 	}
@@ -127,7 +131,7 @@ foreach ($files as $file)
 		echo $dicom->profiler_diff('parse').' '.$dicom->profiler_diff('dump')."\n";
 		unset($dicom);
 	}
-	catch (Nanodicom_Exception $e)
+	catch (NanodicomException $e)
 	{
 		echo 'File failed. '.$e->getMessage()."\n";
 	}
@@ -141,33 +145,33 @@ foreach ($files as $file)
 		echo $dicom->profiler_diff('parse').' '.$dicom->profiler_diff('dump')."\n";
 		unset($dicom);
 	}
-	catch (Nanodicom_Exception $e)
+	catch (NanodicomException $e)
 	{
 		echo 'File failed. '.$e->getMessage()."\n";
 	}
 
-	// 9) Load 'anonymizer' directly.
+	// 9) Load 'Anonymizer' directly.
 	try
 	{
-		echo "9) Load 'anonymizer' directly.\n";
-		$dicom = Nanodicom::factory($filename, 'anonymizer');
+		echo "9) Load 'Anonymizer' directly.\n";
+		$dicom = Nanodicom::factory($filename, 'Anonymizer');
 		file_put_contents($filename.'.ex9', $dicom->anonymize());
 		unset($dicom);
 	}
-	catch (Nanodicom_Exception $e)
+	catch (NanodicomException $e)
 	{
 		echo 'File failed. '.$e->getMessage()."\n";
 	}
 
-	// 10) Extend 'anonymizer'. No need to call parse(), anonymize() will do it.
+	// 10) Extend 'Anonymizer'. No need to call parse(), anonymize() will do it.
 	try
 	{
-		echo "10) Extend 'anonymizer'. No need to call parse(), anonymize() will do it.\n";
+		echo "10) Extend 'Anonymizer'. No need to call parse(), anonymize() will do it.\n";
 		$dicom = Nanodicom::factory($filename);
-		file_put_contents($filename.'.ex10', $dicom->extend('anonymizer')->anonymize());
+		file_put_contents($filename.'.ex10', $dicom->extend('Anonymizer')->anonymize());
 		unset($dicom);
 	}
-	catch (Nanodicom_Exception $e)
+	catch (NanodicomException $e)
 	{
 		echo 'File failed. '.$e->getMessage()."\n";
 	}
@@ -178,10 +182,10 @@ foreach ($files as $file)
 		echo "11) Double extension (and probably you can go on and on)\n";
 		$dicom = Nanodicom::factory($filename);
 		echo $dicom->extend('dumper')->dump();
-		file_put_contents($filename.'.ex11', $dicom->extend('anonymizer')->anonymize());
+		file_put_contents($filename.'.ex11', $dicom->extend('Anonymizer')->anonymize());
 		unset($dicom);
 	}
-	catch (Nanodicom_Exception $e)
+	catch (NanodicomException $e)
 	{
 		echo 'File failed. '.$e->getMessage()."\n";
 	}
@@ -198,7 +202,7 @@ foreach ($files as $file)
 		echo $dicom->write_file($filename.'.ex12')->profiler_diff('write')."\n";
 		unset($dicom);
 	}
-	catch (Nanodicom_Exception $e)
+	catch (NanodicomException $e)
 	{
 		echo 'File failed. '.$e->getMessage()."\n";
 	}
@@ -212,7 +216,7 @@ foreach ($files as $file)
 		echo $dicom->dump();
 		unset($dicom);
 	}
-	catch (Nanodicom_Exception $e)
+	catch (NanodicomException $e)
 	{
 		echo 'File failed. '.$e->getMessage()."\n";
 	}
@@ -225,7 +229,7 @@ foreach ($files as $file)
 		echo 'Is DICOM? '.$dicom->is_dicom()."\n";
 		unset($dicom);
 	}
-	catch (Nanodicom_Exception $e)
+	catch (NanodicomException $e)
 	{
 		echo 'File failed. '.$e->getMessage()."\n";
 	}
@@ -239,10 +243,10 @@ foreach ($files as $file)
 		// Setting values takes care of even length
 		// If set to '1.2.840.10008.1.2.1.99' it will use deflate
 		$dicom->value(0x0002, 0x0010, Nanodicom::EXPLICIT_VR_LITTLE_ENDIAN);
-		file_put_contents($filename.'.ex15', $dicom->extend('anonymizer')->anonymize());
+		file_put_contents($filename.'.ex15', $dicom->extend('Anonymizer')->anonymize());
 		unset($dicom);
 	}
-	catch (Nanodicom_Exception $e)
+	catch (NanodicomException $e)
 	{
 		echo 'File failed. '.$e->getMessage()."\n";
 	}
@@ -273,7 +277,7 @@ foreach ($files as $file)
 		echo $dicom->dump($formatting);
 		unset($dicom);
 	}
-	catch (Nanodicom_Exception $e)
+	catch (NanodicomException $e)
 	{
 		echo 'File failed. '.$e->getMessage()."\n";
 	}
@@ -282,21 +286,21 @@ foreach ($files as $file)
 	try
 	{
 		echo "17) Anonymize on the fly and dump the contents, don't save to a file\n";
-		$dicom  = Nanodicom::factory($filename, 'anonymizer');
+		$dicom  = Nanodicom::factory($filename, 'Anonymizer');
 		$dicom1 = Nanodicom::factory($dicom->anonymize(), 'dumper', 'blob');
 		echo $dicom1->dump();
 		unset($dicom);
 		unset($dicom1);
 	}
-	catch (Nanodicom_Exception $e)
+	catch (NanodicomException $e)
 	{
 		echo 'File failed. '.$e->getMessage()."\n";
 	}
 
-	// 18) Pass your own list of elements to anonymizer
+	// 18) Pass your own list of elements to Anonymizer
 	try
 	{
-		echo "18) Pass your own list of elements to anonymizer\n";
+		echo "18) Pass your own list of elements to Anonymizer\n";
 		// Own tag elements for anonymizing
 		$tags = array(
 			array(0x0008, 0x0020, '{date|Ymd}'),			// Study Date
@@ -306,22 +310,22 @@ foreach ($files as $file)
 			array(0x0010, 0x0020, 'id{consecutive}'), 		// Patient ID
 			array(0x0010, 0x0030, '{date|Ymd}'), 			// Patient Date of Birth
 		);
-		$dicom  = Nanodicom::factory($filename, 'anonymizer');
+		$dicom  = Nanodicom::factory($filename, 'Anonymizer');
 		$dicom1 = Nanodicom::factory($dicom->anonymize($tags), 'dumper', 'blob');
 		echo $dicom1->dump();
 		unset($dicom);
 		unset($dicom1);
 	}
-	catch (Nanodicom_Exception $e)
+	catch (NanodicomException $e)
 	{
 		echo 'File failed. '.$e->getMessage()."\n";
 	}
 
-	// 19) Pass your own list of mappings to anonymizer. Patient Name should be replace to
+	// 19) Pass your own list of mappings to Anonymizer. Patient Name should be replace to
 	// 'Mapped' if 'Anonymized' is found. Case sensitive
 	try
 	{
-		echo "19) Pass your own list of mappings to anonymizer\n";
+		echo "19) Pass your own list of mappings to Anonymizer\n";
 		// Own tag elements for anonymizing
 		$tags = array(
 			array(0x0008, 0x0020, '{date|Ymd}'),			// Study Date
@@ -334,14 +338,14 @@ foreach ($files as $file)
 		$replacements = array(
 			array(0x0010, 0x0010, 'anonymized', 'Mapped'),
 		);
-		$dicom  = Nanodicom::factory($filename, 'anonymizer');
+		$dicom  = Nanodicom::factory($filename, 'Anonymizer');
 		$dicom1 = Nanodicom::factory($dicom->anonymize($tags, $replacements), 'dumper', 'blob');
 		echo $dicom1->dump();
 		file_put_contents($filename.'.ex19', $dicom1->write());
 		unset($dicom);
 		unset($dicom1);
 	}
-	catch (Nanodicom_Exception $e)
+	catch (NanodicomException $e)
 	{
 		echo 'File failed. '.$e->getMessage()."\n";
 	}
@@ -381,7 +385,7 @@ foreach ($files as $file)
 		}
 		unset($dicom);
 	}
-	catch (Nanodicom_Exception $e)
+	catch (NanodicomException $e)
 	{
 		echo 'File failed. '.$e->getMessage()."\n";
 	}
@@ -394,7 +398,7 @@ foreach ($files as $file)
 		echo $dicom->summary();
 		unset($dicom);
 	}
-	catch (Nanodicom_Exception $e)
+	catch (NanodicomException $e)
 	{
 		echo 'File failed. '.$e->getMessage()."\n";
 	}

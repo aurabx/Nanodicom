@@ -1,6 +1,6 @@
 <?php
 /**
- * tools/simple.php file
+ * tools/Simple.php file
  *
  * @package    Nanodicom
  * @category   Tools
@@ -9,9 +9,12 @@
  * @copyright  (c) 2010-2011
  * @license    http://www.opensource.org/licenses/mit-license.php MIT-license
  */
+namespace Nanodicom\Tools;
+
+use Nanodicom\Nanodicom;
 
 /**
- * Dicom_Simple class.
+ * \Nanodicom\Simple class.
  *
  * Extends Nanodicom. Does nothing, it is the default tool loaded, basically to just
  * use the core functionality.
@@ -22,6 +25,6 @@
  * @copyright  (c) 2010-2011
  * @license    http://www.opensource.org/licenses/mit-license.php MIT-license
  */
-class Dicom_Simple extends Nanodicom {
+class Simple extends Nanodicom {
 
-} // End Dicom_Simple
+} // End \Nanodicom\Simple
