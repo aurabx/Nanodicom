@@ -1,6 +1,6 @@
 <?php
 
-namespace Nanodicom;
+namespace Nanodocument\Nanodicom;
 
 /**
  * Nanodicom class.

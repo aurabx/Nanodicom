@@ -1,7 +1,7 @@
 <?php
-namespace Nanodicom\CLI;
+namespace Nanodocument\Nanodicom\CLI;
 
-use Nanodicom\Nanodicom;
+use Nanodocument\Nanodicom\Nanodicom;
 
 class CLI
 {
@@ -164,13 +164,13 @@ class CLI
             if ($errors)
             {
                 // Record any error if present
-                $return .= $this->output_messages('errors', $dicom);
+                $return .= $this->output_messages($dicom, 'errors');
             }
 
             if ($warnings)
             {
                 // Record any warning if present
-                $return .= $this->output_messages('warnings', $dicom);
+                $return .= $this->output_messages($dicom, 'warnings');
             }
 
             // Is a valid DICOM?
@@ -226,13 +226,13 @@ class CLI
             if ($errors)
             {
                 // Record any error if present
-                $return .= $this->output_messages('errors', $dicom);
+                $return .= $this->output_messages($dicom, 'errors');
             }
 
             if ($warnings)
             {
                 // Record any warning if present
-                $return .= $this->output_messages('warnings', $dicom);
+                $return .= $this->output_messages($dicom, 'warnings');
             }
 
             // Is a valid DICOM?
@@ -302,13 +302,13 @@ class CLI
             if ($errors)
             {
                 // Record any error if present
-                $return .= $this->output_messages('errors', $dicom);
+                $return .= $this->output_messages($dicom, 'errors');
             }
 
             if ($warnings)
             {
                 // Record any warning if present
-                $return .= $this->output_messages('warnings', $dicom);
+                $return .= $this->output_messages($dicom, 'warnings');
             }
 
             // Is a valid DICOM?
@@ -355,10 +355,10 @@ class CLI
     /**
      * Function to grab the messages (if exist) from last operation in DICOM object
      *
-     * @param  string  $type       The type of message to output (errors or warnings)
      * @param  object  $dicom      Nanodicom object
+     * @param  string  $type       The type of message to output (errors or warnings)
      */
-    public function output_messages($type = 'errors', $dicom)
+    public function output_messages($dicom, $type = 'errors')
     {
         $return = '';
 

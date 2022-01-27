@@ -1,6 +1,6 @@
 <?php
-use Nanodicom\Nanodicom;
-use Nanodicom\NanodicomException;
+use Nanodocument\Nanodicom\Nanodicom;
+use Nanodocument\Nanodicom\NanodicomException;
 
 
 ini_set('display_errors', 'On');

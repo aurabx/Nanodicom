@@ -1,6 +1,9 @@
 <?php
 
-namespace Nanodicom;
+namespace Nanodocument\Nanodicom;
+
+define('NANODICOMROOT', realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR);
+define('NANODICOMCOREPATH', realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR.'nanodicom'.DIRECTORY_SEPARATOR);
 
 /**
  * nanodicom/Core.php file
@@ -8,18 +11,18 @@ namespace Nanodicom;
  * @package    Nanodicom
  * @category   Base
  * @author     Nano Documet <nanodocumet@gmail.com>
- * @version	   1.3.1
+ * @version
  * @copyright  (c) 2010-2011
  * @license    http://www.opensource.org/licenses/mit-license.php MIT-license
  */
 
 /**
- * Nano\Nanodicom\Core class.
+ * Nanodicom\Core class.
  *
  * @package    Nanodicom
  * @category   Base
  * @author     Nano Documet <nanodocumet@gmail.com>
- * @version	   1.3.1
+ * @version
  * @copyright  (c) 2010-2011
  * @license    http://www.opensource.org/licenses/mit-license.php MIT-license
  */
@@ -139,22 +142,10 @@ abstract class Core {
 	 */
 	public static function factory($location, $name = 'simple', $type = 'file')
 	{
-		// Get the parts from the name
-		$parts = explode('_', $name);
-		
-		$directory = NANODICOMROOT.'tools'.DIRECTORY_SEPARATOR;
-		
-		// Load all the needed files
-		foreach ($parts as $part)
-		{
-			require_once $directory.strtolower($part).'.php';
-			$directory .= strtolower($part).DIRECTORY_SEPARATOR;
-		}
+        // Add the Dicom prefix
+        $class = 'Nanodocument\\Nanodicom\\Tools\\' . ucfirst($name);
 
-		// Add the Dicom prefix
-		$class = 'Dicom_'.$name;
-
-		return new $class($location, $name, $type);
+        return new $class($location, $name, $type);
 	}
 
 	/**
@@ -283,11 +274,6 @@ abstract class Core {
 	 */
 	public function __construct($location, $name, $type)
 	{
-		// Load necessary files
-		require_once NANODICOMCOREPATH.'NanodicomException.php';
-
-		// Load the dictionary
-		require_once NANODICOMCOREPATH.'Dictionary.php';
 
 		self::$_read_int = (PHP_INT_SIZE > 4) ? '_read_int_64' : '_read_int_32';
 		self::$_write_int = (PHP_INT_SIZE > 4) ? '_write_int_64' : '_write_int_32';
@@ -305,7 +291,7 @@ abstract class Core {
 		}
 
 		// To prevent the extension of loaded tool
-		$this->_children[$name] = TRUE;
+//		$this->_children[$name] = TRUE;
 		
 		// Determine if we are running in a command line environment
 		self::$is_cli = (PHP_SAPI === 'cli');
@@ -350,9 +336,9 @@ abstract class Core {
 	{
 		// Get the proper name
 		$name = $this->_proper_name($name);
-		if (isset(\Nanodicom\Dictionary::$dict_by_name[$name]))
+		if (isset(\Nanodocument\Nanodicom\Dictionary::$dict_by_name[$name]))
 		{
-			list($group, $element) = \Nanodicom\Dictionary::$dict_by_name[$name];
+			list($group, $element) = \Nanodocument\Nanodicom\Dictionary::$dict_by_name[$name];
 			$this->value($group, $element, $value);
 		}
 		
@@ -371,9 +357,9 @@ abstract class Core {
 	{
 		// Get the proper name
 		$name = $this->_proper_name($name);
-		if (isset(\Nanodicom\Dictionary::$dict_by_name[$name]))
+		if (isset(\Nanodocument\Nanodicom\Dictionary::$dict_by_name[$name]))
 		{
-			list($group, $element) = \Nanodicom\Dictionary::$dict_by_name[$name];
+			list($group, $element) = \Nanodocument\Nanodicom\Dictionary::$dict_by_name[$name];
 			if (isset($this->_dataset[$group][$element]))
 			{
 				unset($this->_dataset[$group][$element]);
@@ -460,10 +446,10 @@ abstract class Core {
 	 * @param   string  name of the method
 	 * @return  float 	the number of seconds used
 	 */
-	public function profiler_diff($name, $units = 'ms')
+	public function profiler_diff(string $name, $units = 'ms')
 	{
 		$diff = 0;
-		
+
 		// Get the profiling time is exists in current object
 		if (isset($this->profiler[$name]) AND isset($this->profiler[$name]['start']) AND isset($this->profiler[$name]['end']))
 		{
@@ -472,13 +458,15 @@ abstract class Core {
 		else
 		{
 			// Otherwise, navigate the children to find it.
-			foreach ($this->_children as $child_name => $child_class)
-			{
-				if (method_exists($child_class, $name) AND is_callable(array($child_class, $name), TRUE))
-				{
-					$diff = $this->_children[$child_name]->profiler[$name]['end'] - $this->_children[$child_name]->profiler[$name]['start'];
-				}
-			}
+            if(!empty($this->_children)) {
+                foreach ($this->_children as $child_name => $child_class)
+                {
+                    if (method_exists($child_class, $name) AND is_callable(array($child_class, $name), TRUE))
+                    {
+                        $diff = $this->_children[$child_name]->profiler[$name]['end'] - $this->_children[$child_name]->profiler[$name]['start'];
+                    }
+                }
+            }
 		}
 		
 		switch ($units)
@@ -630,15 +618,15 @@ abstract class Core {
 		$this->parse();
 		
 		$transfer_syntax = trim($this->get(0x0002, 0x0010, 'UN'));
-		$transfer_syntax .= ($transfer_syntax == 'UN' OR ! array_key_exists($transfer_syntax, \Nanodicom\Dictionary::$transfer_syntaxes))
+		$transfer_syntax .= ($transfer_syntax == 'UN' OR ! array_key_exists($transfer_syntax, \Nanodocument\Nanodicom\Dictionary::$transfer_syntaxes))
 			? ' - Unknow'
-			: ' - Parsed using: '.\Nanodicom\Dictionary::$transfer_syntaxes[$transfer_syntax][0];
+			: ' - Parsed using: '. \Nanodocument\Nanodicom\Dictionary::$transfer_syntaxes[$transfer_syntax][0];
 			//.'. Parsed using: '.\Nanodicom\Dictionary::$transfer_syntaxes[$this->_transfer_syntax][0];
 		
 		if ($transfer_syntax == 'UN - Unknow')
 		{
 			$transfer_syntax .= ' [Parsed Using: '.$this->_transfer_syntax.' - '
-				.\Nanodicom\Dictionary::$transfer_syntaxes[$this->_transfer_syntax][0].']';
+				. \Nanodocument\Nanodicom\Dictionary::$transfer_syntaxes[$this->_transfer_syntax][0].']';
 		}
 		
 		// Checking for "rows" since that value should be set for images.
@@ -792,9 +780,9 @@ abstract class Core {
 			$new_value = $element;
 
 			// Check if there is an entry in the dictionary
-			if (isset(\Nanodicom\Dictionary::$dict_by_name[$name]))
+			if (isset(\Nanodocument\Nanodicom\Dictionary::$dict_by_name[$name]))
 			{
-				list($group, $element) = \Nanodicom\Dictionary::$dict_by_name[$name];
+				list($group, $element) = \Nanodocument\Nanodicom\Dictionary::$dict_by_name[$name];
 			}
 			else
 			{
@@ -842,7 +830,7 @@ abstract class Core {
 		}
 
 		// Load the dictionary for this group
-		\Nanodicom\Dictionary::load_dictionary($group, TRUE);
+		\Nanodocument\Nanodicom\Dictionary::load_dictionary($group, TRUE);
 
 		// Grab the vr
 		list($value_representation, $multiplicity, $name) = $this->_decode_vr($group, $element, $original_vr, 0);
@@ -1139,8 +1127,8 @@ abstract class Core {
 			return FALSE;
 			
 		if (in_array(sprintf('0x%04X',$group).'.'.sprintf('0x%04X',$element), $this->_vr_reading_list)
-			OR (isset(\Nanodicom\Dictionary::$dict[$group][$element]) 
-				AND in_array(\Nanodicom\Dictionary::$dict[$group][$element][2], $this->_vr_reading_list)))
+			OR (isset(\Nanodocument\Nanodicom\Dictionary::$dict[$group][$element])
+				AND in_array(\Nanodocument\Nanodicom\Dictionary::$dict[$group][$element][2], $this->_vr_reading_list)))
 		{
 			// Element is in list
 			$this->_counted_elements++;
@@ -1216,11 +1204,11 @@ abstract class Core {
 	 */
 	protected function _decode_vr($group, $element, $vr, $length)
 	{
-		if ( isset(\Nanodicom\Dictionary::$dict[$group][$element]))
+		if ( isset(\Nanodocument\Nanodicom\Dictionary::$dict[$group][$element]))
 		{
 			// Group and Element are listed.
 			// 1) From dictionary
-			list($value_representation, $multiplicity, $name) = \Nanodicom\Dictionary::$dict[$group][$element];
+			list($value_representation, $multiplicity, $name) = \Nanodocument\Nanodicom\Dictionary::$dict[$group][$element];
 		}
 		else
 		{
@@ -1365,7 +1353,7 @@ abstract class Core {
 			}
 
 			// Load dictionary (if necessary)
-			\Nanodicom\Dictionary::load_dictionary($new_element[0], $this->_force_load_dictionary);
+			\Nanodocument\Nanodicom\Dictionary::load_dictionary($new_element[0], $this->_force_load_dictionary);
 
 			if ($this->{$this->_check_list_function}($new_element[0], $new_element[1]))
 			{
@@ -1554,7 +1542,7 @@ abstract class Core {
 	protected function _read_value_from_blob( & $elem, $group, $element)
 	{
 		// Load dictionaries (Forced loading)
-		\Nanodicom\Dictionary::load_dictionary($group, TRUE);
+		\Nanodocument\Nanodicom\Dictionary::load_dictionary($group, TRUE);
 
 		// Save current pointer
 		$current_pointer = $this->_tell();

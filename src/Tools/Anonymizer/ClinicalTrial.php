@@ -5,14 +5,14 @@
  * @package    Nanodicom
  * @category   Tools
  * @author     Nano Documet <nanodocumet@gmail.com>
- * @version	   1.3.1
+ * @version
  * @copyright  (c) 2010-2011
  * @license    http://www.opensource.org/licenses/mit-license.php MIT-license
  */
-namespace Nanodicom\Tools\Anonymizer;
+namespace Nanodocument\Nanodicom\Tools\Anonymizer;
 
 
-use Nanodicom\Tools\Anonymizer;
+use Nanodocument\Nanodicom\Tools\Anonymizer;
 
 /**
  * \Nanodicom\Anonymizer_Clinicaltrial class.
@@ -23,7 +23,7 @@ use Nanodicom\Tools\Anonymizer;
  * @package    Nanodicom
  * @category   Tools
  * @author     Nano Documet <nanodocumet@gmail.com>
- * @version	   1.3.1
+ * @version
  * @copyright  (c) 2010-2011
  * @license    http://www.opensource.org/licenses/mit-license.php MIT-license
  */

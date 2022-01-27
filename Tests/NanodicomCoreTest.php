@@ -1,7 +1,5 @@
 <?php
 
-require_once 'nanodicom.php';
-
 class NanodicomCoreTest extends PHPUnit_Framework_TestCase
 {
     /**
