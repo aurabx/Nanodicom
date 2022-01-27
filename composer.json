@@ -1,0 +1,27 @@
+{
+    "name": "nanodocument/nanodicom",
+    "description": "A PHP DICOM parser",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Nanodocument\\Nanodicom\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "resources/tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Nano Documet",
+            "email": "nanodocumet@gmail.com"
+        }
+    ],
+    "files": ["nanodicom.php"],
+    "require": {}
+}
