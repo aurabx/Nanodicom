@@ -69,7 +69,7 @@ class Dictionary
 
 	// Make sure it only loads 1 time
 	protected static $_loaded = FALSE;
-	
+
 	/**
 	 * Loads the dictionary of the group into memory. Dictionaries are load by group
 	 * to allow easy extension for private groups but primarily for performance issues.
@@ -88,12 +88,11 @@ class Dictionary
 		if ( ! $force) return;
 
 		// Let's load dictionary if it was not loaded yet
-		if (! isset(self::$_loaded_dictionaries[$group])  
-			AND file_exists(NANODICOMROOT.DIRECTORY_SEPARATOR.'nanodicom'.DIRECTORY_SEPARATOR.'dict'.DIRECTORY_SEPARATOR.sprintf('0x%04X',$group).'.php'))
-		{
+        $file_location = self::dictionaryPath().sprintf('0x%04X',$group).'.php';
+		if (! isset(self::$_loaded_dictionaries[$group]) AND file_exists($file_location)) {
 			// Load the dictionary
-			require_once(NANODICOMROOT.DIRECTORY_SEPARATOR.'nanodicom'.DIRECTORY_SEPARATOR.'dict'.DIRECTORY_SEPARATOR.sprintf('0x%04X',$group).'.php');
-			
+			require_once($file_location);
+
 			// Some dictionaries could be empty
 			if (isset(Dictionary::$dict[$group]) AND count(Dictionary::$dict[$group]) > 0)
 			{
@@ -104,24 +103,25 @@ class Dictionary
 					unset($dict_element, $dict_data);
 				}
 			}
-			
+
 			// Dictionary was loaded
 			self::$_loaded_dictionaries[$group] = TRUE;
 		}
 	}
+
 
 	/**
 	 * Create a new \Nanodicom\Dictionary instance. There should be only 1 instance running at all times
 	 *
 	 * @return  void
 	 */
-	function __construct() 
+	function __construct()
 	{
 		if (self::$_loaded) return;
 		// Load this class only once
 		self::$_loaded = TRUE;
-		
-		// Group 0x0002		
+
+		// Group 0x0002
 		Dictionary::$dict[0x0002][0x0000] = array('UL', '1', 'MetaElementGroupLength');
 		Dictionary::$dict[0x0002][0x0001] = array('OB', '1', 'FileMetaInformationVersion');
 		Dictionary::$dict[0x0002][0x0002] = array('UI', '1', 'MediaStorageSOPClassUID');
@@ -143,5 +143,14 @@ class Dictionary
 		Dictionary::$_loaded_dictionaries[0x0002] = TRUE;
 		Dictionary::$_loaded_dictionaries[0xFFFE] = TRUE;
 	}
+
+
+    /**
+     * @return string
+     */
+    static public function dictionaryPath(): string
+    {
+        return NANODICOMROOT.'dict'.DIRECTORY_SEPARATOR;
+    }
 }
 
